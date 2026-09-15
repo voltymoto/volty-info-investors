@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Volty U1 | NUEN MOTO</title>
-<meta name="description" content="Volty U1, an electric utility motorcycle by NUEN MOTO. Our main site is now live at voltymoto.com.">
+<meta name="description" content="Volty U1. An electric utility motorcycle built for the people who ride for a living, from NUEN MOTO. 200 kg payload, removable batteries, battery swap under two minutes.">
 <meta property="og:title" content="Volty U1 | NUEN MOTO">
-<meta property="og:description" content="Our main site is now live at voltymoto.com. The Volty U1, an electric utility motorcycle built for the people who ride for a living.">
+<meta property="og:description" content="200 kg payload. 140 to 160 km loaded. Battery swap under two minutes.">
 <meta name="theme-color" content="#0a0a0b">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -49,17 +49,21 @@
 }
 /* JetBrains Mono carries no Vietnamese subset. Tone marks live in U+1EA0 to
    U+1EF9, so on the VI locale the browser splits words across fallback fonts
-   and the marks detach. Every small label on the page uses --mono, so the
-   whole VI locale looked broken. Be Vietnam Pro is the NUEN MOTO parent-brand
-   face and has full coverage. Do not remove this override. */
+   and the marks detach: "thu" renders with a stray mark instead of "thu"
+   with its own. Every small label on the page uses --mono, so the whole
+   VI locale looked broken. Be Vietnam Pro is the NUEN MOTO parent-brand face
+   and has full coverage. Do not remove this override. */
 html[data-lang="vi"]{
   --mono:"Be Vietnam Pro",system-ui,sans-serif;
 }
 html[data-lang="vi"] .tag,
-html[data-lang="vi"] .door .kicker,
-html[data-lang="vi"] .door .act,
-html[data-lang="vi"] .note{letter-spacing:.09em}
+html[data-lang="vi"] .unit .st,
+html[data-lang="vi"] .unit .l,
+html[data-lang="vi"] .perk,
+html[data-lang="vi"] .note,
+html[data-lang="vi"] .f label{letter-spacing:.09em}
 *{box-sizing:border-box}
+html{scroll-behavior:smooth}
 body{
   margin:0;background:var(--bg);color:var(--white);
   font-family:var(--body);font-weight:300;line-height:1.6;
@@ -67,14 +71,35 @@ body{
 }
 svg{display:block;max-width:100%}
 ::selection{background:var(--red);color:#fff}
-:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 
 .tag{
   font-family:var(--mono);font-size:11px;font-weight:500;
   letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin:0;
 }
 .tag .dot{color:var(--red)}
-.lede{font-size:clamp(1rem,1.6vw,1.2rem);color:#b9babe;max-width:56ch;font-weight:200}
+h2.h{
+  font-family:var(--display);font-weight:800;text-transform:uppercase;
+  font-size:clamp(2.4rem,6.5vw,5rem);line-height:.92;margin:.26em 0 .3em;
+}
+/* Section headings set in the wordmark face, English only.
+   The embedded subset carries 100 glyphs: full basic Latin and no Vietnamese
+   at all. D with stroke, A circumflex, E acute plus circumflex, U horn and O
+   horn are every one of them absent, so on the VI locale these headings would
+   break into fallback mid word the way the mono labels used to. VI keeps
+   Saira Condensed, which has full coverage. Do not lift this to html.h. */
+html[data-lang="en"] h2.h.wm{
+  font-family:var(--wordmark);
+  /* Size and line height are deliberately not set here: these headings inherit
+     the h2.h clamp above, so they match every other section heading on the page.
+     Weight stays 400. The face ships one weight, so 800 makes the browser
+     synthesise a bold, which closes the counters on R, G and O, and it would
+     also set these headings heavier than the VOLTY U1 wordmark in the hero,
+     which is this same face at 400. Change the 400 below if you want the
+     synthetic bold anyway; nothing else needs touching. */
+  font-weight:400;
+  letter-spacing:.005em;
+}
+.lede{font-size:clamp(1rem,1.6vw,1.2rem);color:#b9babe;max-width:58ch;font-weight:200}
 
 /* ---------- nav ---------- */
 nav{
@@ -86,6 +111,24 @@ nav{
 }
 .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:inherit;transition:opacity .2s}
 .brand:hover{opacity:.72}
+.navright{display:flex;align-items:center;gap:10px}
+.navcta{
+  background:var(--red);color:#fff;border:0;cursor:pointer;border-radius:2px;
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.14em;
+  text-transform:uppercase;padding:9px 16px;transition:background .2s;white-space:nowrap;
+}
+.navcta:hover{background:#ff2e24}
+/* quiet investor route. Deliberately not a button: the hero job on this page is
+   the rider list, and an investor door competing with it would cost conversions. */
+.navlink{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);text-decoration:none;padding:9px 4px;white-space:nowrap;transition:color .2s;
+}
+.navlink:hover{color:var(--white)}
+.navlink:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+@media(max-width:720px){.navlink{display:none}}
+.navcta .sm{display:none}
+@media(max-width:560px){.navcta{padding:9px 12px;letter-spacing:.1em}.navcta .lg{display:none}.navcta .sm{display:inline}}
 .brand b{font-family:var(--wordmark);font-weight:400;font-size:23px;letter-spacing:.04em}
 .brand span{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--muted)}
 .langtoggle{display:flex;border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
@@ -95,164 +138,264 @@ nav{
 }
 .langtoggle button[aria-pressed="true"]{background:var(--red);color:#fff}
 
-/* ---------- hero ----------
-   This page has one job: put a visitor through the correct door. There is no
-   second section on purpose. Anything added below the fold competes with the
-   two doors and lowers the click through on both. */
+/* ---------- hero ---------- */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:96px var(--gut) 0}
 #field{position:absolute;inset:0;width:100%;height:100%;z-index:0}
 .hero.dragging,.hero.dragging *{user-select:none;-webkit-user-select:none}
-.hero-inner{position:relative;z-index:2;width:100%;margin-top:auto;padding-bottom:clamp(26px,5vh,54px)}
+.hero-inner{position:relative;z-index:2;width:100%;margin-top:auto;padding-bottom:clamp(28px,7vh,80px)}
 .hero h1{
   font-family:var(--wordmark);font-weight:400;text-transform:uppercase;
   font-size:clamp(2.5rem,9.4vw,8rem);line-height:.92;letter-spacing:.005em;margin:.2em 0 .3em;
 }
 .hero h1 em{font-style:normal;color:var(--red)}
+.hero .lede{max-width:52ch}
 
-/* ---------- the two doors ----------
-   The pair is one grid and each door is a subgrid of it, so the kicker, the
-   heading, the body copy and the action line sit on the same four rows across
-   both columns. Either heading can wrap to a second line at any width and the
-   two doors stay level without a reserved height guess. Below 820px the doors
-   stack and revert to flex.
-   Not cards. A door is the full column, edge to edge, divided by one hairline,
-   so the choice reads as two ways out of the page rather than two products on
-   a shelf. The red bar on the left of each door is the only decoration and it
-   grows on hover and on keyboard focus, which is the same signal by both
-   routes in. */
-.doors{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;
-  grid-template-rows:auto auto 1fr auto;border-top:1px solid var(--line)}
-.door{
-  position:relative;display:grid;grid-template-rows:subgrid;grid-row:span 4;row-gap:12px;
-  text-decoration:none;color:inherit;
-  padding:clamp(24px,3.2vw,40px) clamp(16px,2.4vw,34px) clamp(26px,3.4vw,42px);
-  transition:background .22s ease;
+/* ---------- build state strip ----------
+   This replaced a countdown to 04.09.2026. A clock makes a promise that
+   expires; on the morning it runs out the page reads 00 00 00 00 to every
+   visitor and cites the "ceased operations" story for the reader. A state
+   strip carries the same urgency and stays true on any day it is loaded. */
+.clockwrap{position:relative;z-index:2;padding:clamp(22px,4vh,42px) 0 clamp(26px,5vh,46px);border-top:1px solid var(--line)}
+.clocktop{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:clamp(16px,2.6vh,26px)}
+.clocktop .big{color:var(--white)}
+.clock{display:grid;grid-template-columns:repeat(3,1fr);align-items:stretch;gap:0}
+@media(max-width:720px){.clock{grid-template-columns:1fr}}
+.unit{display:flex;flex-direction:column;padding-left:clamp(10px,2vw,26px);padding-right:clamp(10px,2vw,22px)}
+.unit + .unit{border-left:1px solid var(--line)}
+@media(max-width:720px){
+  .unit{padding-left:13px;padding-top:15px;padding-bottom:15px}
+  .unit + .unit{border-left:0;border-top:1px solid var(--line)}
 }
-.door + .door{border-left:1px solid var(--line)}
-@media(max-width:820px){
-  .doors{grid-template-columns:1fr;grid-template-rows:none}
-  .door{display:flex;flex-direction:column;gap:12px;grid-row:auto}
-  .door + .door{border-left:0;border-top:1px solid var(--line)}
-}
-.door::before{
-  content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--red);
-  transform:scaleY(0);transform-origin:top;transition:transform .28s cubic-bezier(.2,.7,.2,1);
-}
-.door:hover,.door:focus-visible{background:var(--panel)}
-.door:hover::before,.door:focus-visible::before{transform:scaleY(1)}
-.door .kicker{
-  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.18em;
-  text-transform:uppercase;color:var(--muted);margin:0;
-}
-.door .kicker i{
-  display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);
-  margin-right:9px;vertical-align:middle;
-}
-.door.private .kicker i{background:var(--muted)}
-.door h2{
+.unit .st{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:clamp(8.5px,1vw,10.5px);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.unit .st i{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:none;font-style:normal}
+.unit.done .st i{background:#8f9296}
+.unit.now .st i{background:var(--red);box-shadow:0 0 0 4px rgba(226,35,26,.20)}
+.unit.now .st{color:var(--red)}
+.unit .n{
   font-family:var(--display);font-weight:800;text-transform:uppercase;
-  font-size:clamp(1.9rem,4.1vw,3.2rem);line-height:.98;letter-spacing:-.005em;margin:0;
+  font-size:clamp(1.22rem,2.75vw,2.05rem);line-height:1.04;letter-spacing:-.005em;margin-top:11px;
 }
-/* Door headings set in the wordmark face, English only.
-   The embedded subset carries 100 glyphs: full basic Latin and no Vietnamese
-   at all. E circumflex, I acute, D with stroke, E acute plus circumflex and
-   U horn are every one of them absent, so on the VI locale these headings
-   would break into a fallback face mid word and the tone marks would detach.
-   VI keeps Saira Condensed, which has full coverage. Do not lift this rule
-   off the [data-lang="en"] selector.
-   Weight stays 400. The face ships one weight, so 800 makes the browser
-   synthesise a bold, which closes the counters on R, G and O and sets these
-   headings heavier than the VOLTY U1 wordmark in the hero, which is this same
-   face at 400. The face also runs wider than Saira Condensed at the same point
-   size, so the clamp is pulled down to keep "Go to our main site" on two lines
-   in a half width column. Checked from 820px, where the doors stop sitting
-   side by side, up to 1920px: both headings hold one line at every width, so
-   the two columns start their body copy on the same line with no reserved
-   height. If the copy on either door is ever lengthened, check that again. */
-html[data-lang="en"] .door h2{
-  font-family:var(--wordmark);
-  font-weight:400;
-  letter-spacing:.005em;
-  font-size:clamp(1.6rem,3.2vw,2.5rem);
-  line-height:1.02;
-}
-.door p{margin:0;font-size:clamp(.92rem,1.4vw,1.02rem);color:#b9babe;font-weight:200;line-height:1.7;max-width:38ch}
-.door .act{
-  margin-top:auto;padding-top:clamp(14px,2vh,22px);
-  font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--white);
-}
-.door.private .act{color:var(--muted)}
-.door.private:hover .act,.door.private:focus-visible .act{color:var(--red)}
-/* One door is the primary route and it is allowed to shout. The investor door
-   is deliberately quiet: it is not for sale to whoever lands here. */
-.act .go{
-  display:inline-block;background:var(--red);color:#fff;border-radius:2px;
-  /* The button reads voltymoto.com in both locales, pure basic Latin, so it
-     carries the wordmark face on EN and VI alike. Weight 400, same reason
-     as the door headings above. */
-  font-family:var(--wordmark);font-weight:400;font-size:clamp(1.02rem,1.5vw,1.22rem);
-  letter-spacing:.04em;padding:14px 26px;transition:background .2s;white-space:nowrap;
-}
-.door .act{max-width:none}
-.door:hover .act .go,.door:focus-visible .act .go{background:#ff2e24}
+.unit .l{font-family:var(--mono);font-size:clamp(9px,1vw,10.5px);letter-spacing:.06em;
+  color:var(--muted);text-transform:none;margin-top:auto;padding-top:12px;line-height:1.7;max-width:34ch}
+@media(max-width:720px){.unit .l{margin-top:9px;padding-top:0}}
+.cue{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);z-index:2}
+.cue i{display:block;width:1px;height:30px;background:var(--red);animation:drop 2.4s infinite}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 
-.note{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#55565b;line-height:1.8;margin:0;
-  position:relative;z-index:2;padding:16px 0 clamp(20px,4vh,34px);max-width:58ch}
+/* ---------- sections ---------- */
+section{padding:clamp(80px,12vh,150px) var(--gut);position:relative}
+
+/* ---------- the machine ----------
+   This replaced an interactive torch reveal over an outline drawing. The
+   reveal existed to withhold the vehicle before a launch date. There is no
+   launch date now and the vehicle is photographed, so withholding the shape
+   bought nothing. What is still behind the list is the full specification,
+   the price and the order window, and the section copy has to say so. */
+.stage{position:relative;border:1px solid var(--line);background:#08080a;overflow:hidden;line-height:0}
+.stage img{width:100%;height:auto;display:block}
+.stagefoot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.machinenote{margin:clamp(26px,4vh,44px) 0 0;max-width:62ch}
+.machinenote p{margin:0 0 14px;font-size:clamp(.95rem,1.5vw,1.1rem);color:#b9babe;font-weight:200;line-height:1.75}
+.machinenote p:last-child{margin-bottom:0}
+.machinenote b{color:var(--white);font-weight:400}
+
+/* ---------- get in line ---------- */
+.perks{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 0}
+.perk{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#a3a4a9;border:1px solid var(--line);padding:9px 13px;border-radius:2px}
+.perk b{color:var(--red);font-weight:500;margin-right:8px}
+.formwrap{border:1px solid var(--line);background:var(--panel)}
+.fields{padding:clamp(22px,3vw,36px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media(max-width:620px){.fields{grid-template-columns:1fr}}
+.f{display:flex;flex-direction:column;gap:8px}
+.f label{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.f input,.f select{
+  background:#0c0c0e;border:1px solid var(--line-strong);color:var(--white);
+  font-family:var(--body);font-size:.95rem;padding:13px 14px;border-radius:2px;
+}
+.f input:focus,.f select:focus{outline:none;border-color:var(--red)}
+.submit{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:22px}
+.btn{
+  background:var(--red);color:#fff;border:0;cursor:pointer;
+  font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+  font-size:1.2rem;padding:15px 34px;border-radius:2px;transition:.2s;
+}
+.btn:hover{background:#ff2e24}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.note{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:#55565b;max-width:46ch;line-height:1.7;margin:0}
+.msg{grid-column:1/-1;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--red);min-height:1em;margin:0}
+.already{margin-top:22px;border:1px solid var(--line);border-left:2px solid var(--red);
+  padding:18px clamp(16px,2.4vw,26px);max-width:60ch}
+.already p{margin:0;font-size:.94rem;color:#b9babe;font-weight:200;line-height:1.7}
+.already b{color:var(--white);font-weight:400}
+
+/* ---------- cta + signup sheet ---------- */
+.ctablock{display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap;padding:clamp(26px,3.4vw,40px)}
+.ctablock .tag{margin-bottom:14px}
+.sheetwrap{position:fixed;inset:0;z-index:200;display:grid;place-items:center;padding:clamp(12px,3vw,40px)}
+.sheetwrap[hidden]{display:none}
+.sheetbg{position:absolute;inset:0;background:rgba(6,6,7,.86);backdrop-filter:blur(6px)}
+.sheet{position:relative;width:min(560px,100%);max-height:min(760px,92svh);display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line-strong);border-radius:3px;overflow:hidden}
+.sheethead{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.sheetx{background:none;border:0;color:var(--muted);font-size:26px;line-height:1;cursor:pointer;padding:0 4px}
+.sheetx:hover{color:var(--red)}
+.sheet iframe{flex:1;width:100%;min-height:520px;border:0;background:#fff}
+.sheetfoot{padding:12px 16px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.sheetdone{background:none;border:1px solid var(--line-strong);color:var(--white);cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;padding:9px 18px;border-radius:2px;transition:.2s}
+.sheetdone:hover{border-color:var(--red);color:var(--red)}
+.sheetfoot a{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--muted);text-decoration:none}
+.sheetfoot a:hover{color:var(--red)}
+body.locked{overflow:hidden}
 
 footer{padding:44px var(--gut) 60px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-end}
+footer .flink{color:inherit;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:1px;transition:color .18s,border-color .18s}
+footer .flink:hover{color:var(--red);border-color:var(--red)}
+footer .flink:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 footer .tag{line-height:2}
-footer a{color:inherit;text-decoration:none}
-footer a:hover{color:var(--red)}
+/* the footer stacks on a phone, so the right hand column stops being a column
+   and reads better ranged left with the address above it */
+@media(max-width:620px){footer > div[style*="text-align:right"]{text-align:left!important}}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
 
 @media(max-width:640px){
   .brand span{display:none}
+  .cue{display:none}
+  .unit{padding-left:8px}
 }
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <a class="brand" href="/" aria-label="Volty home"><b>VOLTY</b><span>BY NUEN MOTO</span></a>
-  <div class="langtoggle" role="group" aria-label="Language">
-    <button id="btn-en" aria-pressed="true">EN</button>
-    <button id="btn-vi" aria-pressed="false">VI</button>
+  <a class="brand" href="/" aria-label="Volty U1 home"><b>VOLTY</b><span>BY NUEN MOTO</span></a>
+  <div class="navright">
+    <a class="navlink" href="/company-overview.html" data-en="Investors" data-vi="Nhà đầu tư">Investors</a>
+    <button class="navcta" id="navjoin">
+      <span class="lg" data-en="Join the list" data-vi="Đăng ký danh sách">Join the list</span>
+      <span class="sm" data-en="Join" data-vi="Đăng ký">Join</span>
+    </button>
+    <div class="langtoggle" role="group" aria-label="Language">
+      <button id="btn-en" aria-pressed="true">EN</button>
+      <button id="btn-vi" aria-pressed="false">VI</button>
+    </div>
   </div>
 </nav>
 
-<!-- ============ HERO, THE ONLY SECTION ============ -->
+<!-- ============ HERO ============ -->
 <header class="hero" id="top">
   <canvas id="field" aria-hidden="true"></canvas>
 
   <div class="hero-inner">
-    <p class="tag"><span class="dot">/</span> <span data-en="Thank you for visiting" data-vi="Cảm ơn bạn đã ghé thăm">Thank you for visiting</span></p>
+    <p class="tag"><span class="dot">/</span> Thu Duc, Ho Chi Minh City</p>
     <h1>VOLTY <em>U1</em></h1>
-    <p class="lede" data-en="We are excited to bring you our latest modular EV platform, the Volty U1 electric utility motorcycle." data-vi="Chúng tôi rất vui được giới thiệu nền tảng xe điện mô-đun mới nhất của mình, xe máy điện tiện ích Volty U1.">We are excited to bring you our latest modular EV platform, the Volty U1 electric utility motorcycle.</p>
+    <p class="lede" data-en="An electric utility motorcycle built for the people who ride for a living. Not just a lifestyle machine wearing a delivery box." data-vi="Xe máy điện tiện ích dành cho những người chạy xe để kiếm sống. Không chỉ là một chiếc xe phong cách sống gắn thêm thùng hàng.">An electric utility motorcycle built for the people who ride for a living. Not just a lifestyle machine wearing a delivery box.</p>
   </div>
 
-  <div class="doors">
+  <div class="clockwrap">
+    <div class="clocktop">
+      <p class="tag"><span class="dot">/</span> <span data-en="Where the build stands" data-vi="Tiến độ hiện tại">Where the build stands</span></p>
+      <p class="tag" data-en="Ho Chi Minh City" data-vi="Thành phố Hồ Chí Minh">Ho Chi Minh City</p>
+    </div>
+    <div class="clock" aria-label="Build progress">
 
-    <a class="door" id="door-public" href="#">
-      <p class="kicker"><i></i><span data-en="Riders and fleets" data-vi="Người lái và đội xe">Riders and fleets</span></p>
-      <h2 data-en="Go to our main site" data-vi="Đến trang chính">Go to our main site</h2>
-      <p data-en="Full specification, rider running costs, fleet economics, and the waitlist. All of it now lives on our main site." data-vi="Thông số đầy đủ, chi phí vận hành cho người lái, bài toán kinh tế cho đội xe, và danh sách đăng ký. Tất cả nay nằm trên trang chính của chúng tôi.">Full specification, rider running costs, fleet economics, and the waitlist. All of it now lives on our main site.</p>
-      <p class="act"><span class="go" data-en="voltymoto.com" data-vi="voltymoto.com">voltymoto.com</span></p>
-    </a>
+      <div class="unit done">
+        <p class="st"><i></i><span data-en="Complete" data-vi="Hoàn thành">Complete</span></p>
+        <div class="n" data-en="Specs published" data-vi="Đã công bố thông số">Specs published</div>
+        <div class="l" data-en="Measured on running test vehicles, not projected." data-vi="Đo trên xe chạy thử thực tế, không phải ước tính.">Measured on running test vehicles, not projected.</div>
+      </div>
 
-    <a class="door private" id="door-private" href="#" rel="nofollow noopener">
-      <p class="kicker"><i></i><span data-en="Investor inquiries" data-vi="Dành cho nhà đầu tư">Investor inquiries</span></p>
-      <h2 data-en="Private room" data-vi="Khu vực riêng">Private room</h2>
-      <p data-en="Business plan and financials. Access is by password. If you do not have one, write to us and we will decide from there." data-vi="Kế hoạch kinh doanh và tài chính. Truy cập bằng mật khẩu. Nếu bạn chưa có, hãy gửi thư cho chúng tôi và chúng tôi sẽ xem xét.">Business plan and financials. Access is by password. If you do not have one, write to us and we will decide from there.</p>
-      <p class="act" data-en="Password required" data-vi="Cần mật khẩu">Password required</p>
-    </a>
+      <div class="unit now">
+        <p class="st"><i></i><span data-en="In progress" data-vi="Đang thực hiện">In progress</span></p>
+        <div class="n" data-en="Supplier lock" data-vi="Chốt nhà cung cấp">Supplier lock</div>
+        <div class="l" data-en="Every part closed out before we commit tooling. Tooling is expensive to change." data-vi="Chốt từng chi tiết trước khi đặt khuôn. Khuôn rất tốn kém để sửa.">Every part closed out before we commit tooling. Tooling is expensive to change.</div>
+      </div>
 
+      <div class="unit">
+        <p class="st"><i></i><span data-en="Next" data-vi="Tiếp theo">Next</span></p>
+        <div class="n" data-en="Type approval" data-vi="Chứng nhận kiểu loại">Type approval</div>
+        <div class="l" data-en="No vehicle is delivered in Vietnam without it. We will not name a delivery date before we hold it." data-vi="Không xe nào được giao tại Việt Nam nếu chưa có. Chúng tôi không công bố ngày giao xe trước khi có nó.">No vehicle is delivered in Vietnam without it. We will not name a delivery date before we hold it.</div>
+      </div>
+
+    </div>
   </div>
 
-  <p class="note" data-en="NUEN MOTO Company Limited builds the Volty U1 in Thu Duc, Ho Chi Minh City. No delivery date is published until Vietnam Register type approval is in hand." data-vi="Công ty TNHH NUEN MOTO sản xuất Volty U1 tại Thủ Đức, Thành phố Hồ Chí Minh. Chúng tôi không công bố ngày giao xe cho đến khi có chứng nhận kiểu loại của Cục Đăng kiểm Việt Nam.">NUEN MOTO Company Limited builds the Volty U1 in Thu Duc, Ho Chi Minh City. No delivery date is published until Vietnam Register type approval is in hand.</p>
+  <div class="cue" aria-hidden="true"><i></i></div>
 </header>
+
+<!-- ============ THE MACHINE ============
+     Headline swap, if you want the softer line:
+       data-en="Say hello to the Volty U1" data-vi="Xin chào Volty U1"
+     Changing it here is the only edit needed. -->
+<section id="machine">
+  <div class="rv" style="margin-bottom:clamp(30px,5vh,58px)">
+    <p class="tag"><span class="dot">/</span> <span data-en="The machine" data-vi="Chiếc xe">The machine</span></p>
+    <h2 class="h wm" data-en="Here it is" data-vi="Đây là chiếc xe">Here it is</h2>
+    <p class="lede" data-en="A running test vehicle, photographed in the workshop this month. Not a render, and not a show bike built to be looked at." data-vi="Xe chạy thử thực tế, chụp tại xưởng trong tháng này. Không phải ảnh dựng, cũng không phải xe trưng bày.">A running test vehicle, photographed in the workshop this month. Not a render, and not a show bike built to be looked at.</p>
+  </div>
+
+  <figure class="stage rv" id="stage" style="margin:0">
+    <picture>
+      <!-- Narrow viewports get a tighter crop. At full frame the vehicle is a
+           thumbnail on a phone, which is the screen most Vietnamese riders and
+           dispatchers will open this on. -->
+      <source media="(max-width:700px)" type="image/webp"
+              srcset="volty-u1-machine-tall-760.webp 760w, volty-u1-machine-tall-1100.webp 1100w"
+              sizes="100vw" width="1100" height="826">
+      <img
+      src="volty-u1-machine-1200.webp"
+      srcset="volty-u1-machine-800.webp 800w, volty-u1-machine-1200.webp 1200w, volty-u1-machine-1800.webp 1800w"
+      sizes="(max-width:900px) 100vw, 1200px"
+      width="1800" height="1104"
+      alt="The Volty U1 on its centre stand in a workshop. Black tubular frame with a white and red body panel reading VOLTY, a long bench seat, and cargo racks over the front wheel and behind the seat."
+      loading="lazy" decoding="async">
+    </picture>
+  </figure>
+
+  <div class="stagefoot rv">
+    <p class="tag" data-en="Test vehicle, September 2026" data-vi="Xe chạy thử, tháng 9 năm 2026">Test vehicle, September 2026</p>
+    <p class="tag"><span class="dot" data-en="FULL SPEC AND PRICE GO TO THE LIST FIRST" data-vi="THÔNG SỐ ĐẦY ĐỦ VÀ GIÁ GỬI CHO DANH SÁCH ĐĂNG KÝ TRƯỚC">FULL SPEC AND PRICE GO TO THE LIST FIRST</span></p>
+  </div>
+
+  <div class="machinenote rv">
+    <p data-en="Some hardware on this vehicle is temporary and will change before we commit tooling. The parts that will not change are the ones that decide whether it earns money: a load platform you can rack at the front, the middle and the rear, batteries you lift out by hand, and a frame built around <b>200 kg of cargo</b> rather than a rider on a weekend." data-vi="Một số chi tiết trên xe này chỉ là tạm thời và sẽ thay đổi trước khi chúng tôi đặt khuôn. Những phần không thay đổi là những phần quyết định xe có kiếm được tiền hay không: mặt sàn chở hàng lắp được giá phía trước, giữa và sau, pin tháo ra bằng tay, và khung xe thiết kế quanh <b>200 kg hàng hóa</b> chứ không phải quanh một người đi chơi cuối tuần.">Some hardware on this vehicle is temporary and will change before we commit tooling. The parts that will not change are the ones that decide whether it earns money: a load platform you can rack at the front, the middle and the rear, batteries you lift out by hand, and a frame built around <b>200 kg of cargo</b> rather than a rider on a weekend.</p>
+    <p data-en="The numbers behind it, and what it will cost you, go to the list before they go anywhere else." data-vi="Các thông số phía sau chiếc xe, và mức giá bạn phải trả, sẽ gửi cho danh sách đăng ký trước khi công bố ở bất kỳ đâu khác.">The numbers behind it, and what it will cost you, go to the list before they go anywhere else.</p>
+  </div>
+</section>
+
+<!-- ============ GET IN LINE ============ -->
+<section id="line" style="padding-top:0">
+  <div class="rv" style="margin-bottom:clamp(30px,5vh,58px)">
+    <p class="tag"><span class="dot">/</span> <span data-en="Get in line" data-vi="Đăng ký">Get in line</span></p>
+    <h2 class="h wm" data-en="Be first through the door" data-vi="Là người đầu tiên bước vào">Be first through the door</h2>
+    <p class="lede" data-en="Leave your details and we come to you before the public announcement. Full specification, price, and the order window, ahead of general release." data-vi="Để lại thông tin và chúng tôi sẽ liên hệ trước khi công bố rộng rãi. Thông số đầy đủ, giá bán và thời điểm mở đặt hàng, trước khi công bố công khai.">Leave your details and we come to you before the public announcement. Full specification, price, and the order window, ahead of general release.</p>
+    <div class="perks">
+      <span class="perk"><b>01</b><span data-en="First look at the full spec" data-vi="Xem thông số đầy đủ trước tiên">First look at the full spec</span></span>
+      <span class="perk"><b>02</b><span data-en="Know the price first" data-vi="Biết giá trước">Know the price first</span></span>
+      <span class="perk"><b>03</b><span data-en="First claim on a rider slot in the first batch" data-vi="Ưu tiên giữ suất người dùng cá nhân trong lô đầu tiên">First claim on a rider slot in the first batch</span></span>
+    </div>
+  </div>
+
+  <div class="formwrap rv">
+    <div class="ctablock">
+      <div>
+        <p class="tag" data-en="Takes under a minute" data-vi="Chưa tới một phút">Takes under a minute</p>
+        <button class="btn" id="open" data-en="Join the list" data-vi="Đăng ký danh sách">Join the list</button>
+      </div>
+      <p class="note" data-en="We use this to contact you about the Volty U1 only. Handled under Decree 13/2023 on personal data protection. You can ask us to delete it at any time." data-vi="Chúng tôi chỉ dùng thông tin này để liên hệ về Volty U1. Xử lý theo Nghị định 13/2023 về bảo vệ dữ liệu cá nhân. Bạn có thể yêu cầu xóa bất cứ lúc nào.">We use this to contact you about the Volty U1 only. Handled under Decree 13/2023 on personal data protection. You can ask us to delete it at any time.</p>
+    </div>
+  </div>
+
+  <div class="already rv">
+    <p data-en="<b>Already signed up?</b> There is nothing more for you to do. You are on the list, and you get the full specification and the order window before either goes public. We will not fill your inbox in between." data-vi="<b>Đã đăng ký rồi?</b> Bạn không cần làm gì thêm. Tên bạn đã có trong danh sách, và bạn sẽ nhận được thông số đầy đủ cùng thời điểm mở đặt hàng trước khi công bố rộng rãi. Giữa hai lần đó, chúng tôi sẽ không làm phiền hộp thư của bạn."><b>Already signed up?</b> There is nothing more for you to do. You are on the list, and you get the full specification and the order window before either goes public. We will not fill your inbox in between.</p>
+  </div>
+</section>
 
 <footer>
   <div>
@@ -260,12 +403,27 @@ footer a:hover{color:var(--red)}
     <p class="tag">NUEN MOTO COMPANY LIMITED<br>TAX ID 0317847638<br>THU DUC, HO CHI MINH CITY</p>
   </div>
   <div style="text-align:right">
-    <p class="tag"><a href="mailto:ride@nuenmoto.com">RIDE@NUENMOTO.COM</a></p>
-    <p class="tag"><a id="foot-main" href="#">VOLTYMOTO.COM</a></p>
-    <p class="tag"><a id="foot-parent" href="#">NUENMOTO.COM</a></p>
-    <p class="tag" style="color:#3f4045">&copy; 2026 NUEN MOTO CO., LTD</p>
+    <p class="tag"><a class="flink" href="mailto:ride@nuenmoto.com">RIDE@NUENMOTO.COM</a></p>
+    <p class="tag"><a class="flink" href="https://www.nuenmoto.com" rel="noopener">NUENMOTO.COM</a></p>
+    <p class="tag"><a class="flink" href="/company-overview.html" data-en="INVESTOR ACCESS" data-vi="KHU VỰC NHÀ ĐẦU TƯ">INVESTOR ACCESS</a></p>
+    <p class="tag" style="color:#3f4045;margin-top:10px">&copy; 2026 NUEN MOTO CO., LTD</p>
   </div>
 </footer>
+
+<div class="sheetwrap" id="sheet" hidden>
+  <div class="sheetbg" id="sheetbg"></div>
+  <div class="sheet" role="dialog" aria-modal="true" aria-label="Join the list">
+    <div class="sheethead">
+      <p class="tag"><span class="dot">/</span> <span data-en="Join the list" data-vi="Đăng ký danh sách">Join the list</span></p>
+      <button class="sheetx" id="sheetx" aria-label="Close">&times;</button>
+    </div>
+    <iframe id="sheetframe" title="Volty U1 signup form" src="" loading="lazy"></iframe>
+    <div class="sheetfoot">
+      <a id="sheetopen" href="#" target="_blank" rel="noopener" data-en="Form not loading? Open it in a new tab" data-vi="Biểu mẫu không hiện? Mở trong tab mới">Form not loading? Open it in a new tab</a>
+      <button class="sheetdone" id="sheetdone" data-en="Done" data-vi="Xong">Done</button>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -273,32 +431,21 @@ footer a:hover{color:var(--red)}
 
 /* ============================================================
    EDIT BEFORE PUBLISHING
-   ============================================================
-   Two destinations, two lines. Nothing else on this page is configurable.
+   ============================================================ */
+/* The LAUNCH date and its countdown were removed on purpose. Do not put a
+   clock back on this page unless the date behind it is contractually fixed.
+   The previous one expired at 09:00 ICT on 04.09.2026 and sat at 00 00 00 00. */
 
-   MAIN_SITE   where riders, fleets and press are sent.
-   INVESTOR_URL the investor entry point.
-
-   Set to /business-plan because investors.html is not deployed yet. This is
-   the middle of the chain: it opens at a password prompt with no pitch deck
-   in front of it, so a cold investor sees a wall and no thesis. The moment
-   investors.html goes live, change this line to "/investors" and change the
-   door copy back to naming the company thesis. One line, one paragraph.
-*/
-var MAIN_SITE    = "https://www.voltymoto.com/";
-var PARENT_SITE  = "https://www.nuenmoto.com/";
-var INVESTOR_URL = "/business-plan";
+/* Paste the share link from your Lark Base form view here. Nothing else to configure. */
+var LARK_FORM_URL = "https://ajtl41ifn3x.sg.larksuite.com/share/base/form/shrlg3QWYnTF3EBPxtNTbE2Zwnh";
 /* ============================================================ */
 
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-document.getElementById("door-public").href = MAIN_SITE;
-document.getElementById("foot-main").href   = MAIN_SITE;
-document.getElementById("foot-parent").href = PARENT_SITE;
-document.getElementById("door-private").href = INVESTOR_URL;
+var lang = "en";
 
 /* ---------- language ---------- */
 function setLang(next){
+  lang = next;
   document.documentElement.setAttribute("data-lang", next);
   document.documentElement.lang = next === "vi" ? "vi" : "en";
   var nodes = document.querySelectorAll("[data-en]");
@@ -312,10 +459,18 @@ function setLang(next){
 document.getElementById("btn-en").addEventListener("click", function(){ setLang("en"); });
 document.getElementById("btn-vi").addEventListener("click", function(){ setLang("vi"); });
 
-/* ---------- hero field ----------
-   Carried over unchanged from the teaser page. The pointer holds the Volty V
-   and the mark is drawn by the field itself. It is the one piece of motion on
-   the page and it only moves when the visitor moves. */
+/* ---------- reveal on scroll ---------- */
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(!e.isIntersecting) return;
+    e.target.classList.add("in");
+    io.unobserve(e.target);
+  });
+}, {threshold:.16});
+var rvs = document.querySelectorAll(".rv");
+for(var r=0;r<rvs.length;r++) io.observe(rvs[r]);
+
+/* ---------- hero field ---------- */
 var cv = document.getElementById("field"), cx = cv.getContext("2d");
 var dots = [], W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
 var px = -9999, py = -9999, hasPointer = false, heroVisible = true;
@@ -325,26 +480,49 @@ function build(){
   W = cv.clientWidth; H = cv.clientHeight;
   cv.width = W * dpr; cv.height = H * dpr;
   cx.setTransform(dpr,0,0,dpr,0,0);
-  var gap = W < 620 ? 14 : 16;
+  var gap = W < 620 ? 14 : 16;   /* the mark is drawn by these dots, and it is small and dim now, so density is doing the work brightness used to */
+  /* see AMB below: at this density the ambient field must not build strings or arcs per dot */
   dots = [];
   for(var y = gap*0.6; y < H; y += gap)
     for(var x = gap*0.6; x < W; x += gap)
       dots.push({ox:x, oy:y, j:(Math.random()*2-1), k:Math.random()});
 }
-/* V_POLY is the mark itself, not an approximation of it: the twelve vertices
+/* The pointer carries the Volty V.
+   V_POLY is the mark itself, not an approximation of it: the twelve vertices
    are lifted straight out of the path in favicon.svg
      M100 1600 H500 V783 L883 400 H917 L1300 783 V1600 H1700 V617 L1083 0 H717 L100 617 Z
-   run through its own transform and normalised to a 100 unit box. If the logo
-   is ever redrawn, regenerate this array from the new path rather than nudging
-   the numbers by eye. */
+   run through its own transform and normalised to a 100 unit box. The mark has
+   a flat bottom edge and a shield profile, which two capsules cannot express,
+   so the polygon is carried literally. If the logo is ever redrawn, regenerate
+   this array from the new path rather than nudging the numbers by eye.
+
+   Dots inside the mark light up where they stand. Dots just outside are drawn
+   in and packed against the inner face of the edge, so the field fills the
+   silhouette under your hand and lets it go as you move on.
+
+   Deliberately not the other version of this, which is turning every dot into
+   a small V. A trademark repeated a thousand times a frame stops reading as a
+   mark, and the fill cost lands on exactly the cheap Android hardware our
+   riders and dispatchers use. The mark is used once, large. */
 var V_POLY = [[0,0],[25,0],[25,51.06],[48.94,75],[51.06,75],[75,51.06],[75,0],[100,0],[100,61.44],[61.44,100],[38.56,100],[0,61.44]];
 var V_N     = V_POLY.length;
-var V_CX    = 50, V_CY = 50.26;
-var PULL    = 19;
-var INSET   = 8.5;
+var V_CX    = 50, V_CY = 50.26;   /* area centroid, so the mark balances on the cursor */
+var PULL    = 19;                 /* how far outside the edge dots start being drawn in */
+var INSET   = 8.5;                /* how deep inside the edge they pack */
+
+/* Peak opacity of the mark. Lower than this and the silhouette stops reading
+   as the logo: E2231A at 0.25 over #0a0a0b is about 1.6:1 against the page,
+   which is texture rather than a mark. The per dot variance below matters
+   more than the number itself, because it keeps the edge legible while the
+   average stays low. One constant, change it here. */
 var V_ALPHA = 0.30;
-var SWIRL   = 0.055;
-var ORBIT   = 1.45;
+
+/* Motion inside the mark. The silhouette itself never rotates: a logo on a
+   tilt is off brand, and a spinning V reads as a loading spinner. Instead the
+   fill swirls gently about the centroid and every dot runs its own small
+   orbit, so the mark is alive while staying square to the page. */
+var SWIRL   = 0.055;               /* radians, peak of the shared oscillation */
+var ORBIT   = 1.45;                /* mark units, per dot orbit radius */
 
 function inPoly(x, y){
   var inside = false;
@@ -355,9 +533,11 @@ function inPoly(x, y){
   return inside;
 }
 
-/* The shimmer is quantised into a fixed palette and drawn as sub pixel rects
-   rather than arcs. Visually identical at this size, and it took a throttled
-   phone back from 33 fps to full rate. */
+/* The ambient field is now several thousand dots a frame. Building an
+   "rgba(...)" string and walking an arc path for each one costs more than
+   everything the mark does. The shimmer is quantised into a fixed palette and
+   drawn as sub pixel rects instead: visually identical at this size, and it
+   took a throttled phone back from 33 fps to full rate. */
 var AMB = [], AMB_N = 10;
 for(var ai=0; ai<AMB_N; ai++){
   AMB.push("rgba(245,245,246," + (0.05 + 0.10*ai/(AMB_N-1)).toFixed(3) + ")");
@@ -385,12 +565,12 @@ function draw(t){
   cx.clearRect(0,0,W,H);
   boost += ((dragging ? 1.3 : 1) - boost) * 0.10;
 
-  var S    = (W < 620 ? 145 : 225) * boost;
-  var k    = S / 100;
+  var S    = (W < 620 ? 145 : 225) * boost;   /* mark height on screen, px */
+  var k    = S / 100;                          /* mark units to px */
   var wave = t * 0.0006;
   var lim  = PULL + 6;
   var spin = t * 0.00055;
-  var sw   = Math.sin(spin) * SWIRL;
+  var sw   = Math.sin(spin) * SWIRL;          /* shared swirl of the fill */
   var cs   = Math.cos(sw), sn = Math.sin(sw);
 
   for(var i=0;i<dots.length;i++){
@@ -418,15 +598,21 @@ function draw(t){
         if(nearestEdge(lx, ly, _e) < PULL){
           var f = 1 - _e.d/PULL;
           var g = f*f*(3-2*f);
+
+          /* the way in is straight at the nearest edge, then a little past it,
+             so gathered dots pack against the inner face instead of outlining it */
           var ix = (_e.x - lx)/(_e.d || 1), iy = (_e.y - ly)/(_e.d || 1);
           var tx = _e.x + ix * d.k * INSET;
           var ty = _e.y + iy * d.k * INSET;
+
           var qx = tx - V_CX, qy = ty - V_CY;
           var ux = qx*cs - qy*sn, uy = qx*sn + qy*cs;
           var ob = spin*1.7 + d.k*6.2832;
           ux += Math.cos(ob) * ORBIT * (0.45 + d.k);
           uy += Math.sin(ob) * ORBIT * (0.45 + d.k);
+
           var sx = px + ux*k, sy = py + uy*k;
+
           var pr = Math.pow(g, 0.30);
           cx.fillStyle = "rgba(226,35,26," + (V_ALPHA * g * (0.55 + d.k*0.7)) + ")";
           cx.beginPath();
@@ -469,6 +655,51 @@ window.addEventListener("pointercancel", function(){
   dragging = false;
   document.querySelector(".hero").classList.remove("dragging");
 }, {passive:true});
+
+/* ---------- signup sheet ---------- */
+var sheet    = document.getElementById("sheet");
+var frame    = document.getElementById("sheetframe");
+var openLink = document.getElementById("sheetopen");
+var openBtn  = document.getElementById("open");
+var lastFocus = null;
+
+/* Only a published form view is safe to expose. A /base/ link would show the
+   whole Base, order book included, to anyone who can open it. */
+var FORM_OK = /\/share\/base\/form\/shr/.test(LARK_FORM_URL);
+if(LARK_FORM_URL && !FORM_OK){
+  console.warn("LARK_FORM_URL is not a form share link. Expected .../share/base/form/shr... Refusing to open it.");
+}
+
+function openSheet(){
+  if(!LARK_FORM_URL || !FORM_OK){ return; }
+  lastFocus = document.activeElement;
+  if(frame.src !== LARK_FORM_URL) frame.src = LARK_FORM_URL;
+  openLink.href = LARK_FORM_URL;
+  sheet.hidden = false;
+  document.body.classList.add("locked");
+  document.getElementById("sheetx").focus();
+}
+function closeSheet(){
+  sheet.hidden = true;
+  document.body.classList.remove("locked");
+  if(lastFocus) lastFocus.focus();
+}
+
+document.getElementById("navjoin").addEventListener("click", function(){
+  document.getElementById("line").scrollIntoView({behavior:"smooth"});
+  setTimeout(function(){ openBtn.click(); }, 520);
+});
+openBtn.addEventListener("click", function(){
+  if(!LARK_FORM_URL || !FORM_OK){
+    window.location.href = "mailto:ride@nuenmoto.com?subject=" + encodeURIComponent("Volty U1 list");
+    return;
+  }
+  openSheet();
+});
+document.getElementById("sheetx").addEventListener("click", closeSheet);
+document.getElementById("sheetdone").addEventListener("click", closeSheet);
+document.getElementById("sheetbg").addEventListener("click", closeSheet);
+document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !sheet.hidden) closeSheet(); });
 
 })();
 </script>
