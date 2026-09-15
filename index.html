@@ -110,21 +110,30 @@ nav{
 .hero h1 em{font-style:normal;color:var(--red)}
 
 /* ---------- the two doors ----------
+   The pair is one grid and each door is a subgrid of it, so the kicker, the
+   heading, the body copy and the action line sit on the same four rows across
+   both columns. Either heading can wrap to a second line at any width and the
+   two doors stay level without a reserved height guess. Below 820px the doors
+   stack and revert to flex.
    Not cards. A door is the full column, edge to edge, divided by one hairline,
    so the choice reads as two ways out of the page rather than two products on
    a shelf. The red bar on the left of each door is the only decoration and it
    grows on hover and on keyboard focus, which is the same signal by both
    routes in. */
-.doors{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line)}
-@media(max-width:820px){.doors{grid-template-columns:1fr}}
+.doors{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;
+  grid-template-rows:auto auto 1fr auto;border-top:1px solid var(--line)}
 .door{
-  position:relative;display:flex;flex-direction:column;gap:12px;
+  position:relative;display:grid;grid-template-rows:subgrid;grid-row:span 4;row-gap:12px;
   text-decoration:none;color:inherit;
   padding:clamp(24px,3.2vw,40px) clamp(16px,2.4vw,34px) clamp(26px,3.4vw,42px);
   transition:background .22s ease;
 }
 .door + .door{border-left:1px solid var(--line)}
-@media(max-width:820px){.door + .door{border-left:0;border-top:1px solid var(--line)}}
+@media(max-width:820px){
+  .doors{grid-template-columns:1fr;grid-template-rows:none}
+  .door{display:flex;flex-direction:column;gap:12px;grid-row:auto}
+  .door + .door{border-left:0;border-top:1px solid var(--line)}
+}
 .door::before{
   content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--red);
   transform:scaleY(0);transform-origin:top;transition:transform .28s cubic-bezier(.2,.7,.2,1);
@@ -143,12 +152,30 @@ nav{
 .door h2{
   font-family:var(--display);font-weight:800;text-transform:uppercase;
   font-size:clamp(1.9rem,4.1vw,3.2rem);line-height:.98;letter-spacing:-.005em;margin:0;
-  /* Two lines reserved. The left heading wraps and the right one does not, so
-     without this the two doors start their body copy at different heights and
-     the pair reads as a layout mistake. */
-  min-height:1.96em;
 }
-@media(max-width:820px){.door h2{min-height:0}}
+/* Door headings set in the wordmark face, English only.
+   The embedded subset carries 100 glyphs: full basic Latin and no Vietnamese
+   at all. E circumflex, I acute, D with stroke, E acute plus circumflex and
+   U horn are every one of them absent, so on the VI locale these headings
+   would break into a fallback face mid word and the tone marks would detach.
+   VI keeps Saira Condensed, which has full coverage. Do not lift this rule
+   off the [data-lang="en"] selector.
+   Weight stays 400. The face ships one weight, so 800 makes the browser
+   synthesise a bold, which closes the counters on R, G and O and sets these
+   headings heavier than the VOLTY U1 wordmark in the hero, which is this same
+   face at 400. The face also runs wider than Saira Condensed at the same point
+   size, so the clamp is pulled down to keep "Go to our main site" on two lines
+   in a half width column. Checked from 820px, where the doors stop sitting
+   side by side, up to 1920px: both headings hold one line at every width, so
+   the two columns start their body copy on the same line with no reserved
+   height. If the copy on either door is ever lengthened, check that again. */
+html[data-lang="en"] .door h2{
+  font-family:var(--wordmark);
+  font-weight:400;
+  letter-spacing:.005em;
+  font-size:clamp(1.6rem,3.2vw,2.5rem);
+  line-height:1.02;
+}
 .door p{margin:0;font-size:clamp(.92rem,1.4vw,1.02rem);color:#b9babe;font-weight:200;line-height:1.7;max-width:38ch}
 .door .act{
   margin-top:auto;padding-top:clamp(14px,2vh,22px);
@@ -161,8 +188,11 @@ nav{
    is deliberately quiet: it is not for sale to whoever lands here. */
 .act .go{
   display:inline-block;background:var(--red);color:#fff;border-radius:2px;
-  font-family:var(--display);font-weight:800;font-size:clamp(1rem,1.5vw,1.18rem);
-  letter-spacing:.05em;padding:14px 26px;transition:background .2s;white-space:nowrap;
+  /* The button reads voltymoto.com in both locales, pure basic Latin, so it
+     carries the wordmark face on EN and VI alike. Weight 400, same reason
+     as the door headings above. */
+  font-family:var(--wordmark);font-weight:400;font-size:clamp(1.02rem,1.5vw,1.22rem);
+  letter-spacing:.04em;padding:14px 26px;transition:background .2s;white-space:nowrap;
 }
 .door .act{max-width:none}
 .door:hover .act .go,.door:focus-visible .act .go{background:#ff2e24}
@@ -215,7 +245,7 @@ footer a:hover{color:var(--red)}
     <a class="door private" id="door-private" href="#" rel="nofollow noopener">
       <p class="kicker"><i></i><span data-en="Investor inquiries" data-vi="Dành cho nhà đầu tư">Investor inquiries</span></p>
       <h2 data-en="Private room" data-vi="Khu vực riêng">Private room</h2>
-      <p data-en="Company thesis, business plan, and financials. Access is by password. If you do not have one, write to us and we will decide from there." data-vi="Luận điểm công ty, kế hoạch kinh doanh và tài chính. Truy cập bằng mật khẩu. Nếu bạn chưa có, hãy gửi thư cho chúng tôi và chúng tôi sẽ xem xét.">Company thesis, business plan, and financials. Access is by password. If you do not have one, write to us and we will decide from there.</p>
+      <p data-en="Business plan and financials. Access is by password. If you do not have one, write to us and we will decide from there." data-vi="Kế hoạch kinh doanh và tài chính. Truy cập bằng mật khẩu. Nếu bạn chưa có, hãy gửi thư cho chúng tôi và chúng tôi sẽ xem xét.">Business plan and financials. Access is by password. If you do not have one, write to us and we will decide from there.</p>
       <p class="act" data-en="Password required" data-vi="Cần mật khẩu">Password required</p>
     </a>
 
@@ -246,13 +276,16 @@ footer a:hover{color:var(--red)}
    Two destinations, two lines. Nothing else on this page is configurable.
 
    MAIN_SITE   where riders, fleets and press are sent.
-   INVESTOR_URL the investor entry point. Point this at the first page of the
-   chain, not at the middle of it. /investors opens the deck and pages on to
-   the business plan and the financials. Sending someone straight to
-   /business-plan puts them at a password prompt with no thesis in front of it.
+   INVESTOR_URL the investor entry point.
+
+   Set to /business-plan because investors.html is not deployed yet. This is
+   the middle of the chain: it opens at a password prompt with no pitch deck
+   in front of it, so a cold investor sees a wall and no thesis. The moment
+   investors.html goes live, change this line to "/investors" and change the
+   door copy back to naming the company thesis. One line, one paragraph.
 */
 var MAIN_SITE    = "https://www.voltymoto.com/";
-var INVESTOR_URL = "/investors";
+var INVESTOR_URL = "/business-plan";
 /* ============================================================ */
 
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
