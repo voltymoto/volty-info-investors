@@ -260,8 +260,9 @@ footer a:hover{color:var(--red)}
     <p class="tag">NUEN MOTO COMPANY LIMITED<br>TAX ID 0317847638<br>THU DUC, HO CHI MINH CITY</p>
   </div>
   <div style="text-align:right">
-    <p class="tag"><a href="mailto:hello@volty.info">HELLO@VOLTY.INFO</a></p>
+    <p class="tag"><a href="mailto:ride@nuenmoto.com">RIDE@NUENMOTO.COM</a></p>
     <p class="tag"><a id="foot-main" href="#">VOLTYMOTO.COM</a></p>
+    <p class="tag"><a id="foot-parent" href="#">NUENMOTO.COM</a></p>
     <p class="tag" style="color:#3f4045">&copy; 2026 NUEN MOTO CO., LTD</p>
   </div>
 </footer>
@@ -285,6 +286,7 @@ footer a:hover{color:var(--red)}
    door copy back to naming the company thesis. One line, one paragraph.
 */
 var MAIN_SITE    = "https://www.voltymoto.com/";
+var PARENT_SITE  = "https://www.nuenmoto.com/";
 var INVESTOR_URL = "/business-plan";
 /* ============================================================ */
 
@@ -292,6 +294,7 @@ var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 document.getElementById("door-public").href = MAIN_SITE;
 document.getElementById("foot-main").href   = MAIN_SITE;
+document.getElementById("foot-parent").href = PARENT_SITE;
 document.getElementById("door-private").href = INVESTOR_URL;
 
 /* ---------- language ---------- */
