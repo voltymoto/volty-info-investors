@@ -245,8 +245,8 @@ footer a:hover{color:var(--red)}
     <a class="door private" id="door-private" href="#" rel="nofollow noopener">
       <p class="kicker"><i></i><span data-en="Investor inquiries" data-vi="Dành cho nhà đầu tư">Investor inquiries</span></p>
       <h2 data-en="Private room" data-vi="Khu vực riêng">Private room</h2>
-      <p data-en="Business plan and financials. Access is by password. If you do not have one, write to us and we will decide from there." data-vi="Kế hoạch kinh doanh và tài chính. Truy cập bằng mật khẩu. Nếu bạn chưa có, hãy gửi thư cho chúng tôi và chúng tôi sẽ xem xét.">Business plan and financials. Access is by password. If you do not have one, write to us and we will decide from there.</p>
-      <p class="act" data-en="Password required" data-vi="Cần mật khẩu">Password required</p>
+      <p data-en="Company overview, pitch deck, business plan, and financials. Sign-in required. If you do not have access, write to us and we will decide from there." data-vi="Tổng quan công ty, hồ sơ giới thiệu, kế hoạch kinh doanh và tài chính. Cần đăng nhập. Nếu bạn chưa có quyền truy cập, hãy gửi thư cho chúng tôi và chúng tôi sẽ xem xét.">Company overview, pitch deck, business plan, and financials. Sign-in required. If you do not have access, write to us and we will decide from there.</p>
+      <p class="act" data-en="Sign-in required" data-vi="Cần đăng nhập">Sign-in required</p>
     </a>
 
   </div>
@@ -277,17 +277,16 @@ footer a:hover{color:var(--red)}
    Two destinations, two lines. Nothing else on this page is configurable.
 
    MAIN_SITE   where riders, fleets and press are sent.
-   INVESTOR_URL the investor entry point.
-
-   Set to /business-plan because investors.html is not deployed yet. This is
-   the middle of the chain: it opens at a password prompt with no pitch deck
-   in front of it, so a cold investor sees a wall and no thesis. The moment
-   investors.html goes live, change this line to "/investors" and change the
-   door copy back to naming the company thesis. One line, one paragraph.
+   INVESTOR_URL the investor entry point. Set to /company-overview, which is
+   the first link in the chain: overview, then the pitch deck, then the
+   business plan, then the financials, paged in that order from the bottom of
+   each page. Point this at the top of the chain and nowhere else. Any deeper
+   link drops a reader into the middle of the story and skips the context the
+   pages after it assume you have already read.
 */
 var MAIN_SITE    = "https://www.voltymoto.com/";
 var PARENT_SITE  = "https://www.nuenmoto.com/";
-var INVESTOR_URL = "/business-plan";
+var INVESTOR_URL = "/company-overview";
 /* ============================================================ */
 
 var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
